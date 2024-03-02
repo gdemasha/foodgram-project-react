@@ -1,5 +1,6 @@
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from djoser.serializers import UserCreateSerializer, UserSerializer
+from drf_extra_fields.fields import base64
 from rest_framework import serializers, status
 from rest_framework.exceptions import ValidationError
 
@@ -53,7 +54,7 @@ class CustomUserSerializer(UserSerializer):
 class RecipeForFollowSerializer(serializers.ModelSerializer):
     """Сериализатор для рецептов в подписке."""
 
-    image = serializers.StringRelatedField()
+    image = base64
 
     class Meta:
         model = Recipe

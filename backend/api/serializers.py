@@ -1,4 +1,4 @@
-from drf_extra_fields.fields import Base64ImageField
+from drf_extra_fields.fields import Base64ImageField, base64
 from rest_framework import serializers
 from rest_framework.serializers import ValidationError
 
@@ -54,7 +54,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         many=True,
         source='ingredient_parameters',
     )
-    image = serializers.StringRelatedField()
+    image = base64
     name = serializers.CharField(max_length=MAX_LENGTH_TITLE)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()

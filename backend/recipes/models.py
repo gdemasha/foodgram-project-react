@@ -1,13 +1,13 @@
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from users.models import User
 from .constants import (
     COLOR,
-    MAX_LENGTH_TAG,
     MAX_LENGTH_INGREDIENT,
+    MAX_LENGTH_TAG,
     MAX_LENGTH_TITLE,
 )
-from users.models import User
 
 
 class Tag(models.Model):
@@ -137,8 +137,8 @@ class IngredientParameters(models.Model):
     )
 
     class Meta:
-        verbose_name = 'ингредиент'
-        verbose_name_plural = 'Игредиенты'
+        verbose_name = 'ингредиент с количеством'
+        verbose_name_plural = 'Ингредиенты с количеством'
         default_related_name = 'ingredient_parameters'
         constraints = [
             models.UniqueConstraint(

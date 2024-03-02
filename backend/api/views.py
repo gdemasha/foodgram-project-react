@@ -29,7 +29,7 @@ from .serializers import (
 class TagViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
+    viewsets.GenericViewSet,
 ):
     """Вьюсет для тегов."""
 
@@ -41,7 +41,7 @@ class TagViewSet(
 class IngredientViewSet(
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
+    viewsets.GenericViewSet,
 ):
     """Вьюсет для ингредиентов."""
 
@@ -78,7 +78,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         methods=['post', 'delete'],
         detail=True,
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated,),
     )
     def favorite(self, request, pk):
         """Метод для добавления и удаления избранных рецептов."""
@@ -92,7 +92,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             Favorited.objects.create(user=user, recipe=recipe)
             serializer = RecipeForFollowSerializer(recipe)
             return Response(
-                data=serializer.data, status=status.HTTP_201_CREATED,
+                data=serializer.data,
+                status=status.HTTP_201_CREATED,
             )
         if obj.exists():
             obj.delete()
@@ -102,7 +103,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         methods=['post', 'delete'],
         detail=True,
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated,),
     )
     def shopping_cart(self, request, pk):
         """Метод для добавления в корзину и удаления рецептов из списка."""
@@ -116,7 +117,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             ShoppingCart.objects.create(user=user, recipe=recipe)
             serializer = RecipeForFollowSerializer(recipe)
             return Response(
-                data=serializer.data, status=status.HTTP_201_CREATED,
+                data=serializer.data,
+                status=status.HTTP_201_CREATED,
             )
         if obj.exists():
             obj.delete()
@@ -125,7 +127,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     @action(
         methods=['get'],
         detail=False,
-        permission_classes=(IsAuthenticated,)
+        permission_classes=(IsAuthenticated,),
     )
     def download_shopping_cart(self, request):
         """Метод для скачивания списка покупок."""

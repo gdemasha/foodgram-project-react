@@ -10,7 +10,7 @@ from rest_framework.response import Response
 
 from api.pagination import RecipePagination
 from .models import Follow, User
-from .serializers import FollowSerializer, CustomUserSerializer
+from .serializers import CustomUserSerializer, FollowSerializer
 
 
 class CustomUserViewSet(UserViewSet):
@@ -21,8 +21,10 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = RecipePagination
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    @action(detail=False,
-            permission_classes=(IsAuthenticated,))
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated,),
+    )
     def me(self, request):
         """Метода для получения профиля пользователя."""
 
@@ -37,13 +39,14 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscriptions(self, request):
         """Метод для получения всех подписок."""
+
         user = request.user
         queryset = User.objects.filter(following__user=user)
         pages = self.paginate_queryset(queryset)
         serializer = FollowSerializer(
             pages,
             many=True,
-            context={'request': request}
+            context={'request': request},
         )
         return self.get_paginated_response(serializer.data)
 

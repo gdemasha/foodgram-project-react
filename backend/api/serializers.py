@@ -54,7 +54,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         many=True,
         source='ingredient_parameters',
     )
-    image = base64
+    image = base64()
     name = serializers.CharField(max_length=MAX_LENGTH_TITLE)
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()

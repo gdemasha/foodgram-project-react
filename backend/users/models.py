@@ -9,13 +9,13 @@ class User(AbstractUser):
 
     email = models.EmailField(
         'email',
-        unique=True,
         max_length=MAX_LENGTH_EMAIL,
+        unique=True,
     )
     username = models.CharField(
         'Имя пользователя',
-        unique=True,
         max_length=MAX_LENGTH_NAME,
+        unique=True,
     )
     first_name = models.CharField(
         'Имя',

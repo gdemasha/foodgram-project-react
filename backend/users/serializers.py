@@ -45,10 +45,10 @@ class CustomUserSerializer(UserSerializer):
         if request is None or request.user.is_anonymous:
             return False
         return (
-                Follow.objects
-                .filter(user=request.user, author=author)
-                .exists()
-            )
+            Follow.objects
+            .filter(user=request.user, author=author)
+            .exists()
+        )
 
 
 class RecipeForFollowSerializer(serializers.ModelSerializer):

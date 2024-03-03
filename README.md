@@ -4,9 +4,9 @@
 Документация API с актуальными адресами и возможными запросами доступна по [ссылке](http://localhost/api/docs/redoc.html)
 
 Для ревьюера:
-Имя пользователя: manya
-Логин админки: manya@manya.com
-Пароль админки: foodgram_97
+- Имя пользователя: manya
+- Логин админки: manya@manya.com
+- Пароль админки: foodgram_97
 
 ### Стек программ:
 Python, Django, Django Rest Framework, Docker, Gunicorn, NGINX, PostgreSQL

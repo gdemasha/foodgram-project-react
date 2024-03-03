@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
@@ -80,12 +79,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         detail=True,
         permission_classes=(IsAuthenticated,),
     )
-    def favorite(self, request, pk):
+    def favorite(self, request, pk=None):
         """Метод для добавления и удаления избранных рецептов."""
 
-        recipe = get_object_or_404(Recipe, id=pk)
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         user = self.request.user
         obj = Favorited.objects.filter(user=user, recipe=recipe)
+
         if request.method == 'POST':
             if obj.exists():
                 raise ValidationError('Выбранный рецепт уже добавлен')
@@ -95,22 +99,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 data=serializer.data,
                 status=status.HTTP_201_CREATED,
             )
-        if obj.exists():
-            obj.delete()
+        del_count, _ = obj.delete()
+        if del_count:
             return Response(status=status.HTTP_204_NO_CONTENT)
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=['post', 'delete'],
         detail=True,
         permission_classes=(IsAuthenticated,),
     )
-    def shopping_cart(self, request, pk):
+    def shopping_cart(self, request, pk=None):
         """Метод для добавления в корзину и удаления рецептов из списка."""
 
-        recipe = get_object_or_404(Recipe, id=pk)
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+        except Recipe.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
         user = self.request.user
         obj = ShoppingCart.objects.filter(user=user, recipe=recipe)
+
         if request.method == 'POST':
             if obj.exists():
                 raise ValidationError('Выбранный рецепт уже добавлен')
@@ -120,9 +129,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 data=serializer.data,
                 status=status.HTTP_201_CREATED,
             )
-        if obj.exists():
-            obj.delete()
+
+        del_count, _ = obj.delete()
+        if del_count:
             return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=['get'],

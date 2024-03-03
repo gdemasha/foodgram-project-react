@@ -76,10 +76,8 @@ class CustomUserViewSet(UserViewSet):
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         if request.method == 'DELETE':
-            obj = get_object_or_404(
-                Follow,
-                author=author,
-                user=user,
-            )
-            obj.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            obj = Follow.objects.filter(user=user, author=author)
+            del_count, _ = obj.delete()
+            if del_count:
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_400_BAD_REQUEST)

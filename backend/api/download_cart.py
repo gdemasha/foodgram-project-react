@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from recipes.models import IngredientParameters
 
 
-def download(user):
+def download_cart(user):
     """Метод для скачивания списка покупок."""
 
     ingredients_total = (

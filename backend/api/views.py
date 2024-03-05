@@ -95,8 +95,8 @@ class CustomUserViewSet(UserViewSet):
                 status=status.HTTP_201_CREATED,
             )
 
-        del_count, _ = Follow.objects.filter(user=user, author=author).delete()
-        if del_count:
+        if Follow.objects.filter(user=user, author=author).exists():
+            Follow.objects.filter(user=user, author=author).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 

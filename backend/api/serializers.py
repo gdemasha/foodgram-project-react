@@ -79,18 +79,11 @@ class FollowSerializer(CustomUserSerializer):
         )
 
     def get_recipes(self, author):
-        request = self.context.get('request')
-        limit = request.GET.get('recipes_limit')
+        limit = self.context['request'].query_params.get('recipes_limit', None)
         recipes = Recipe.objects.filter(author=author)
         if limit:
             recipes = recipes[:int(limit)]
-
-        serializer = MiniRecipeSerializer(
-            recipes,
-            many=True,
-            read_only=True,
-        )
-        return serializer.data
+        return MiniRecipeSerializer(recipes, many=True).data
 
     def get_recipes_count(self, author):
         return Recipe.objects.filter(author=author).count()

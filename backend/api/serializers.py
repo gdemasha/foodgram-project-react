@@ -91,6 +91,7 @@ class FollowSerializer(CustomUserSerializer):
     def validate(self, data):
         author = self.instance
         user = self.context.get('request').user
+
         if (
             Follow.objects
             .filter(user=user, author=author)

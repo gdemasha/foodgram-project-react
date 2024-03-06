@@ -84,8 +84,8 @@ class CustomUserViewSet(UserViewSet):
 
         if request.method == 'POST':
             serializer = FollowSerializer(
-                author,
-                data=request.data,
+                #data=request.data,
+                data={'user': request.user.pk, 'author': author.id},
                 context={'request': request},
             )
             serializer.is_valid(raise_exception=True)

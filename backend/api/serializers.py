@@ -47,49 +47,26 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed',
         )
 
-    def get_is_subscribed(self, author):
+    def get_is_subscribed(self, obj):
         request = self.context.get('request')
         if request is None or request.user.is_anonymous:
             return False
         return (
             Follow.objects
-            .filter(user=request.user, author=author)
+            .filter(user=request.user, author=obj)
             .exists()
         )
 
 
-class FollowSerializer(CustomUserSerializer):
-    """Сериализатор для подписки."""
-
-    recipes = serializers.SerializerMethodField()
-    recipes_count = serializers.SerializerMethodField()
-    id = serializers.ReadOnlyField(source='author.id')
-    username = serializers.ReadOnlyField(source='author.username')
-    email = serializers.ReadOnlyField(source='author.email')
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
+class FollowSerializer(serializers.ModelSerializer):
+    """Базовый сериализатор для подписки."""
 
     class Meta:
         model = Follow
-        fields = (
-            'recipes_count', 'recipes',
-            'id', 'username', 'email',
-            'first_name', 'last_name',
-            'is_subscribed',
-        )
-
-    def get_recipes(self, author):
-        limit = self.context['request'].query_params.get('recipes_limit', None)
-        recipes = Recipe.objects.filter(author=author)
-        if limit:
-            recipes = recipes[:int(limit)]
-        return MiniRecipeSerializer(recipes, many=True).data
-
-    def get_recipes_count(self, author):
-        return Recipe.objects.filter(author=author).count()
+        exclude = ('user', 'author')
 
     def validate(self, data):
-        author = self.instance
+        author = self.context.get('author')
         user = self.context.get('request').user
 
         if (
@@ -107,6 +84,49 @@ class FollowSerializer(CustomUserSerializer):
                 code=status.HTTP_400_BAD_REQUEST,
             )
         return data
+
+
+class FollowReadSerializer(FollowSerializer):
+    """Сериализатор подписки для чтения информации о рецептах."""
+
+    recipes = serializers.SerializerMethodField()
+    recipes_count = serializers.SerializerMethodField()
+    id = serializers.ReadOnlyField(source='author.id')
+    username = serializers.ReadOnlyField(source='author.username')
+    email = serializers.ReadOnlyField(source='author.email')
+    first_name = serializers.ReadOnlyField(source='author.first_name')
+    last_name = serializers.ReadOnlyField(source='author.last_name')
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = (
+            'recipes_count', 'recipes',
+            'id', 'username', 'email',
+            'first_name', 'last_name',
+            'is_subscribed',
+        )
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit = request.GET.get('recipe_limit')
+        recipes = Recipe.objects.filter(author=obj.author)
+        if limit:
+            recipes = recipes[:int(limit)]
+        return MiniRecipeSerializer(recipes, many=True).data
+
+    def get_recipes_count(self, obj):
+        return Recipe.objects.filter(author=obj.author).count()
+
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        if request is None or request.user.is_anonymous:
+            return False
+        return (
+            Follow.objects
+            .filter(user=obj.user, author=obj.author)
+            .exists()
+        )
 
 
 class TagSerializer(serializers.ModelSerializer):

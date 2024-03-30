@@ -1,7 +1,4 @@
 # Foodgram
-Проект доступен по [ссылке](https://gdefoodgram.ddns.net)
-
-Документация API с актуальными адресами и возможными запросами доступна по [ссылке](http://localhost/api/docs/redoc.html)
 
 ### Стек и инструменты:
 Python, Django, Django Rest Framework, Docker, Gunicorn, NGINX, PostgreSQL, JSON, YAML, React, Telegram, API, Djoser, Postman

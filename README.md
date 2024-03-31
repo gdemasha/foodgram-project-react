@@ -52,8 +52,8 @@ cd backend
 python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
-5. Установите Docker, если у Вас его нет. Инструкция по установке: https://docs.docker.com/
-6. Из директории infra выполните команды:
+5. Установить Docker, если у Вас его нет. Инструкция по установке: https://docs.docker.com/
+6. Из директории infra выполнить команды:
 ```
 docker compose -f docker-compose.production.yml up
 docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
